@@ -17,10 +17,30 @@ sudo pip install psycopg2
 
 # Create database
 echo "Configuring database..."
-sudo -u postgres psql -d postgres -c "CREATE DATABASE gtfs; ALTER USER postgres WITH password 'postgres'"
-sudo -u postgres psql -d gtfs -c "CREATE EXTENSION postgis;"
+sudo -u postgres psql -d postgres -c "CREATE DATABASE gtfs"
+sudo -u postgres psql -d postgres -c "ALTER USER postgres WITH password 'postgres'"
+sudo -u postgres psql -d gtfs -c "CREATE EXTENSION postgis"
 
 # Clone git
 mkdir git
 cd git
 git clone http://github.com/GBPeters/GtfsMerger
+
+# Create service
+sudo bash -c 'cat >/etc/systemd/system/gtfsmerger.service' <<EOT
+[Unit]
+Description=GTFS Merger
+
+[Service]
+User=ubuntu
+ExecStart=/usr/bin/python /home/ubuntu/git/GtfsMerger/app.py
+WorkingDirectory=/home/ubuntu
+
+[Install]
+WantedBy=multi-user.target
+
+EOT
+
+sudo systemctl daemon-reload
+
+
