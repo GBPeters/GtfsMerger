@@ -17,7 +17,7 @@ sudo pip install psycopg2
 
 # Create database
 echo "Configuring database..."
-psql -h localhost -U postgres -d postgres -c "CREATE DATABASE gtfs"
+sudo -u postgres psql -d postgres -c "CREATE DATABASE gtfs"
 sudo -u postgres psql -d gtfs -c "CREATE EXTENSION postgis;"
 
 # Clone git

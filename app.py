@@ -1,6 +1,7 @@
 from merger.merger import merge
+from merger.reader import readGTFSFoldersFromBase
 
-GTFS_FOLDER = '/Users/gijspeters/gtfs'
+GTFS_FOLDER = '/home/ubuntu/gtfs'
 
 PREPROCESS_FOLDER = '/Users/gijspeters/gtfs_preprocess'
 
@@ -14,6 +15,7 @@ INSERT_COMMA_FILES = {
 }
 
 def run():
+    readGTFSFoldersFromBase(GTFS_FOLDER)
     merge()
 
 if __name__ == '__main__':
