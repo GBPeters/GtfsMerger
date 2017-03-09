@@ -26,7 +26,7 @@ def merge():
     # StopTimes Table
     print 'Creating stop times table'
     sql = '''
-    WITH st AS (SELECT %s, max(dataset_id) FROM %s_raw WHERE %s IN
+    WITH st AS (SELECT %s, max(dataset_id) md FROM %s_raw WHERE %s IN
     (SELECT %s FROM %s_t WHERE stop_lat >= %f AND stop_lat <= %f AND stop_lon >= %f AND stop_lon <= %f)
     GROUP BY %s)
     INSERT INTO %s
