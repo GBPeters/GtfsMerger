@@ -15,6 +15,7 @@ INSERT_COMMA_FILES = {
 }
 
 def run():
+    readGTFSFoldersFromBase(GTFS_FOLDER)
     merge()
 
 if __name__ == '__main__':
