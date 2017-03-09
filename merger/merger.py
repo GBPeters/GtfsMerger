@@ -26,14 +26,19 @@ def merge():
     # StopTimes Table
     print 'Creating stop times table'
     sql = '''
+    WITH st AS (SELECT %s, max(dataset_id) FROM %s_raw WHERE %s IN
+    (SELECT %s FROM %s_t WHERE stop_lat >= %f AND stop_lat <= %f AND stop_lon >= %f AND stop_lon <= %f)
+    GROUP BY %s)
     INSERT INTO %s
-    SELECT DISTINCT ON (%s) %s FROM %s_raw WHERE %s IN
-    (SELECT %s FROM %s_raw WHERE %s in
-    (SELECT %s FROM %s_t WHERE stop_lat >= %f AND stop_lat <= %f AND stop_lon >= %f AND stop_lon <= %f))
-    ORDER BY %s, dataset_id DESC
-    ''' % (StopTimesTable().name, StopTimesTable().pks, StopTimesTable().fieldnames, StopTimesTable().name,
-           TripTable().pks, TripTable().pks, StopTimesTable().name, StopTable().pks, StopTable().pks, StopTable().name,
-           ONDER, BOVEN, LINKS, RECHTS, StopTimesTable().pks)
+    SELECT %s FROM %s_raw
+    INNER JOIN st
+    USING (%s) WHERE dataset_id = md
+    ''' % (TripTable().pks, StopTimesTable().name, StopTable().pks,
+           StopTable().pks, StopTable().name, ONDER, BOVEN, LINKS, RECHTS,
+           TripTable().pks,
+           StopTimesTable().name,
+           StopTimesTable().fieldnames, StopTimesTable().name,
+           TripTable().pks)
     print sql
     with Connection() as con:
         con.execute(sql)
@@ -120,9 +125,9 @@ def merge():
     print ' Creating feed info table'
     sql = '''
     INSERT INTO feed_info
-    SELECT feed_publisher, feed_id, feed_publisher_url, feed_lang,
-    min(feed_start_date), max(feed_end_date), max(feed_version)
-    GROUP BY feed_publisher, feed_id, feed_publisher_url, feed_lang,
+    SELECT feed_publisher_name, feed_id, feed_publisher_url, feed_lang,
+    min(feed_start_date), max(feed_end_date), max(feed_version) FROM feed_info_raw
+    GROUP BY feed_publisher_name, feed_id, feed_publisher_url, feed_lang
     '''
     with Connection() as con:
         con.execute(sql)
