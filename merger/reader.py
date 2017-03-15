@@ -45,6 +45,7 @@ def readGTFSFromFolder(foldername, datasetId):
 
 
 def readGTFSFoldersFromBase(foldername):
+    dropTables("_raw")
     i = 1
     for name in [path.join(foldername, name) for name in os.listdir(foldername) if os.path.isdir(os.path.join(foldername, name))]:
         readGTFSFromFolder(name, i)
